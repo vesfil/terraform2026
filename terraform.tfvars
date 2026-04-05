@@ -1,0 +1,8 @@
+resource_group_name   = "ContactsBookRG"
+location              = "Spain Central"
+app_service_plan_name = "contact-book"
+sql_server_name       = "mssqlserver"
+sql_database_name     = "example-db"
+sql_admin_name        = "missadministrator"
+sql_admin_password    = "thisIsKat11"
+firewall_rule_name    = "AllowAll"
