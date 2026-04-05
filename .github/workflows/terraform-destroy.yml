@@ -1,10 +1,10 @@
-name: 'Terraform Destroy'
+name: 'Terraform Destroy All Resources'
 
 on:
   workflow_dispatch:
     inputs:
       confirm:
-        description: 'Type "destroy" to confirm resource deletion'
+        description: 'Type "destroy" to confirm deletion of ALL resources'
         required: true
         type: string
 
@@ -18,16 +18,17 @@ jobs:
   terraform_destroy:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout the repository
+    - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Confirm destroy intention
+    - name: Verify destruction confirmation
       if: ${{ github.event.inputs.confirm != 'destroy' }}
       run: |
-        echo "Error: You must type 'destroy' to confirm resource deletion"
+        echo "❌ ERROR: You must type 'destroy' to confirm resource deletion"
+        echo "Please run the workflow again and type 'destroy' in the confirm field"
         exit 1
 
-    - name: Login to Azure via Azure CLI
+    - name: Login to Azure
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
@@ -38,5 +39,16 @@ jobs:
     - name: Terraform Init
       run: terraform init
 
+    - name: Show resources that will be destroyed
+      run: |
+        echo "📋 Resources that will be destroyed:"
+        terraform state list || echo "No resources found in state"
+
     - name: Terraform Destroy
       run: terraform destroy -auto-approve
+
+    - name: Verify destruction
+      run: |
+        echo "✅ Destroy completed!"
+        echo "Resources remaining in state:"
+        terraform state list || echo "State is empty"
