@@ -33,29 +33,29 @@ jobs:
       run: terraform plan -out=tfplan
 
     - name: Save Terraform Plan as artifact
-      uses: action/upload-artifact@v4
+      uses: actions/upload-artifact@v4
       with:
         name: tfplan
         path: tfplan
 
-  terraform apply:
+  terraform_apply:
     needs: terraform_plan
     runs-on: ubuntu-latest
     steps:
     - name: Checkout the repository
       uses: actions/checkout@v4
 
-    - name: Install Terraform
+    - name: Setup Terraform
       uses: hashicorp/setup-terraform@v4
 
     - name: Terraform Init
-      uses: terraform init
+      run: terraform init
     
     - name: Download Terraform Plan artifact
-      uses: action/download-artifact@v4
+      uses: actions/download-artifact@v4
       with:
         name: tfplan
         path: .
 
     - name: Terraform Apply
-      run: terraform apply -auto-approve plan tfplan
+      run: terraform apply -auto-approve tfplan
