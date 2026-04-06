@@ -15,6 +15,7 @@ terraform {
     storage_account_name = "tskdstorage2026"
     container_name       = "taskboardcontainer"
     key                  = "terraform.tfstate"
+    use_azuread_auth     = true
   }
 }
 
